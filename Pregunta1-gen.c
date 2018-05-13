@@ -9,6 +9,8 @@
 
 char randomString[12];
 int listaCursos[CANT_NOTA];
+char nombreAlumno[7];
+char apellidoAlumno[7];
 
 //Structs para cursos y notas
 typedef struct {
@@ -56,6 +58,22 @@ void genCursos(int cantCursos) {
   }
 }
 
+void genNombre() {
+  static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  for (int n = 0; n < 6; n++) {
+    int key = rand() % (int)(sizeof(charset) - 1);
+    nombreAlumno[n] = charset[key];
+  }
+  nombreAlumno[6] = '\0';
+  for (int n = 0; n < 6; n++) {
+    int key = rand() % (int)(sizeof(charset) - 1);
+    apellidoAlumno[n] = charset[key];
+  }
+  apellidoAlumno[6] = '\0';
+}
+
+
 int main(){
   srand(time(NULL));
   //20 cursos, 10 por semestre
@@ -102,6 +120,26 @@ int main(){
     genRol();
     strcpy(listaRol[index], randomString);
   }
+
+  //Generamos el archivo con nombres
+  fp = fopen("alumnos.txt", "w");
+  if( fp == NULL ){
+    perror("No se pudo abrir el archivo");
+    exit(1);
+  }
+
+  for (int i = 0; i < CANT_ALUM; i++) {
+    char anio[5];
+    anio[0] = listaRol[i][0];
+    anio[1] = listaRol[i][1];
+    anio[2] = listaRol[i][2];
+    anio[3] = listaRol[i][3];
+    anio[4] = '\0';
+    genNombre();
+    fprintf(fp, "%s %s %s %s\n", listaRol[i], nombreAlumno, apellidoAlumno, anio);
+  }
+
+  fclose(fp);
 
   //Ahora generamos las notas
   nota notas[CANT_ALUM*CANT_NOTA] = {{"", "", 0}};
