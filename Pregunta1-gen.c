@@ -128,6 +128,9 @@ int main(){
     exit(1);
   }
 
+  //FIX: Numero total de alumnos
+  fprintf(fp, "%d\n", CANT_ALUM);
+
   for (int i = 0; i < CANT_ALUM; i++) {
     char anio[5];
     anio[0] = listaRol[i][0];
