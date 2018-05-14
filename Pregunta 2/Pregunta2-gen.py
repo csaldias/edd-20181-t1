@@ -2,7 +2,7 @@ from random import randint, choice
 
 #Definimos la cantidad de palabras, sitios web y consultas
 cant_palabras  = 300
-cant_sitiosweb = 100
+cant_sitiosweb = 50
 cant_consultas = 100
 
 #Cuántos sitios web (max) por cada palabra?
