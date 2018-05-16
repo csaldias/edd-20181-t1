@@ -5,10 +5,9 @@
 
 //Constantes para el número de cursos y alumnos a generar
 #define CANT_ALUM 100 //Numero de alumnos
-#define CANT_NOTA 4   //Numero de notas por alumno
+#define CANT_NOTA 8   //Numero de notas por alumno
 
 char randomString[12];
-int listaCursos[CANT_NOTA];
 char nombreAlumno[7];
 char apellidoAlumno[7];
 
@@ -41,23 +40,6 @@ void genRol() {
   randomString[11] = '\0';
 }
 
-void genCursos(int cantCursos) {
-  int index = 0;
-  while(index < CANT_NOTA) {
-    int flag = 1;
-    int num = rand() % cantCursos;
-    for(int j=index-1; j>=0; j--) {
-      if (listaCursos[j] == num) {
-        flag = 0;
-      }
-    }
-    if (flag) {
-      listaCursos[index] = num;
-      index++;
-    }
-  }
-}
-
 void genNombre() {
   static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -76,29 +58,16 @@ void genNombre() {
 
 int main(){
   srand(time(NULL));
-  //20 cursos, 10 por semestre
-  //Dejé los cursos fijos, aunque también se podrían aleatorizar
-  curso cursos[20] = {
+  //8 cursos, 4 por semestre
+  curso cursos[8] = {
     {"INF245",1},
     {"INF285",1},
     {"INF360",1},
     {"INF225",1},
-    {"INF256",1},
-    {"INF239",1},
-    {"INF236",1},
-    {"INF280",1},
-    {"INF152",1},
-    {"INF295",1},
     {"INF292",2},
     {"INF322",2},
     {"INF266",2},
-    {"INF228",2},
-    {"INF155",2},
-    {"INF276",2},
-    {"INF246",2},
-    {"INF260",2},
-    {"INF309",2},
-    {"INF221",2}
+    {"INF228",2}
   };
 
   //Gneración del archivo cursos.dat
@@ -109,9 +78,9 @@ int main(){
     exit(1);
   }
 
-  int n = 20;
+  int n = 8;
   fwrite( &n, sizeof(int), 1, fp );
-  fwrite( cursos, sizeof(curso),20,fp);
+  fwrite( cursos, sizeof(curso),n,fp);
   fclose(fp);
 
   //Generamos una lista con roles
@@ -148,11 +117,9 @@ int main(){
   nota notas[CANT_ALUM*CANT_NOTA] = {{"", "", 0}};
   int index = 0;
   for (int i = 0; i < CANT_ALUM; i++) {
-    genCursos(20);
     for (int j = 0; j < CANT_NOTA; j++) {
-      int curso_index = listaCursos[j];
       strcpy(notas[index].rolEstudiante, listaRol[i]);
-      strcpy(notas[index].siglaCurso, cursos[curso_index].sigla);
+      strcpy(notas[index].siglaCurso, cursos[j].sigla);
       notas[index].nota = rand() % 100 + 1;
       index++;
     }
@@ -161,7 +128,7 @@ int main(){
   fp = fopen("notas.dat","w");
   if( fp == NULL ){ perror("No se pudo abrir el archivo"); exit(1);}
 
-  n = CANT_ALUM;
+  n = CANT_ALUM*CANT_NOTA;
   fwrite(&n,sizeof(int),1,fp);
   fwrite(notas,sizeof(nota),n,fp);
   fclose(fp);
